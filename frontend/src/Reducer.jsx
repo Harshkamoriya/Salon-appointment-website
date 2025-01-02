@@ -9,6 +9,12 @@ export const Reducer = (state , action)=>{
                 image:action.payload.image,
             };
     }
+    if(action.type== "SET_ORDER"){
+        return{
+            ...state,
+            order : action.payload,
+        }
+    }
     if(action.type =="SET_PROFILE_INFO"){
         return{
             ...state,

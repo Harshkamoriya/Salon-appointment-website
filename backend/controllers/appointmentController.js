@@ -4,12 +4,19 @@ import crypto from 'crypto';
 import Service from "../models/service.js";
 import User from "../models/User.js";
 import { isValidObjectId } from "mongoose";
+// const Razorpay = require('razorpay');
 
 const availableTimeSlots = [
     '09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM', '11:00 AM',
     '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM',
     '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM'
 ];
+
+
+const razorpay= new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID, // Replace with your Razorpay Key ID
+    key_secret: process.env.RAZORPAY_KEY_SECRET, // Replace with your Razorpay Key Secret
+});
 
 // Fetch available slots
 const availableSlots = async (req, res) => {
@@ -302,15 +309,16 @@ const getAppointmentByName = async (req, res) => {
 
 // Razor pay setup
 
-const razorpay = new Razorpay({
-    key_id:'your_razorpay_key_id',
-    key_secret:'your_razorpay_secret',
 
-});
+
 
 // create Razorpay order after booking appointment 
 
 const createRazorpayOrder = async (req , res)=>{
+    console.log("Key ID:", process.env.RAZORPAY_KEY_ID);
+console.log("Key Secret:", process.env.RAZORPAY_KEY_SECRET);
+
+    console.log("request body in the razorpay order is ", req.body)
 const {amount} = req.body;
 try{
     const order = await razorpay.orders.create({
@@ -318,6 +326,7 @@ try{
         currency:'INR',
         receipt:`receipt_${Date.now()}`
     });
+    console.log("order found is ", order);
     res.status(200).json(order);
 }
 catch( error) {

@@ -1,76 +1,92 @@
+// Payment.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../Context";
 import styled from "styled-components";
 
-const Payment = ({ order }) => {
-  const {services} = useGlobalContext();
-  const { bookData } = useGlobalContext();
-  const [price , setPrice] = useState(null);
+const Payment = () => {
+  const { services, bookData } = useGlobalContext();
+  const {order} = useGlobalContext();
+  console.log(order);
+  const [price, setPrice] = useState(null);
 
+  // Fetch the price of the selected service
+  const fetchPrice = (serviceName) => {
+    const service = services.find((service) => service.name === serviceName);
+    return service ? service.price : null;
+  };
+
+  console.log("order got from globalxontext", order);
+
+
+
+  // Get the latest booking details
+  const latestBooking = bookData?.length > 0 ? bookData[bookData.length - 1] : null;
+
+  // Fetch price on component load or when dependencies change
+  useEffect(() => {
+    if (latestBooking && services.length > 0) {
+      const fetchedPrice = fetchPrice(latestBooking.service);
+      setPrice(fetchedPrice);
+    }
+  }, [services, latestBooking]);
+
+  // Handle Razorpay payment
   const handlePayment = async () => {
+    console.log("handle payment called")
+    console.log(import.meta.env.VITE_RAZORPAY_KEY);
+
+    if (!order || !price) {
+      alert("Order details or price are missing!");
+      return;
+    }
+  
     const options = {
-      key: "your_razorpay_key_id", // Replace with your Razorpay Key ID
+      key: import.meta.env.VITE_RAZORPAY_KEY , // Razorpay Key ID from environment
       amount: order.amount, // Amount in paise
       currency: "INR",
-      name: "Salon Service",
+      name: "Salon Service", // Business name
       description: "Appointment Payment",
       order_id: order.id, // Razorpay order ID
       handler: async (response) => {
+        // Verify payment on the backend
         try {
           const res = await axios.post("/appointments/verify-payment", {
             razorpay_order_id: response.razorpay_order_id,
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,
           });
-
-          const data = res.data;
-
-          if (data.message === "Payment successful") {
+  
+          if (res.data.message === "Payment verified successfully") {
             alert("Payment successful!");
-            window.location.href = "/confirmation";
+            window.location.href = "/confirmation"; // Redirect to confirmation page
           } else {
-            alert("Payment verification failed");
+            alert("Payment verification failed. Please contact support.");
           }
         } catch (error) {
-          alert("Error: " + error.message);
+          console.error("Error during payment verification:", error);
+          alert("Payment verification failed. Please try again.");
         }
       },
       prefill: {
-        name: "Customer Name", // Replace with dynamic customer name if available
-        email: "customer@example.com", // Replace with dynamic email if available
-        contact: "1234567890", // Replace with dynamic contact number if available
+        name: latestBooking?.fullname || "Customer Name",
+        email: latestBooking?.email || "customer@example.com",
+        contact: latestBooking?.contact || "1234567890",
+      },
+      theme: {
+        color: "#3399cc", // Replace with your preferred theme color
       },
     };
-
+  
     const rzp1 = new window.Razorpay(options);
+  
+    rzp1.on("payment.failed", (response) => {
+      console.error("Payment failed:", response.error);
+      alert("Payment failed. Please try again.");
+    });
+  
     rzp1.open();
   };
-
-  // fetching the price of the chosen service
-
-  const fetchprice = (serviceName) => {
-    console.log("Services Array:", services);
-    console.log("Service Name to Find:", serviceName);
-  
-    const service = services.find((service) => service.name === serviceName);
-    return service ? service.price : "Service not found";
-  };
-  
-
-
-  // Get the latest booking details
-  const latestBooking = bookData && bookData.length > 0 ? bookData[bookData.length - 1] : null;
-//  fetching price
-  useEffect(() => {
-    if (latestBooking && services.length > 0) {
-      const fetchedPrice = fetchprice(latestBooking.service);
-      console.log("Fetched Price:", fetchedPrice);
-      setPrice(fetchedPrice);
-    } else {
-      console.log("Services or latestBooking not available");
-    }
-  }, [services, bookData]);
   
 
   return (
@@ -79,53 +95,26 @@ const Payment = ({ order }) => {
         <h2 className="common-heading">Booking Summary</h2>
         {latestBooking ? (
           <div className="summary-card">
-           <p className="flex-between">
-  <span>Name:</span> 
-  <span>{latestBooking.fullname}</span>
-</p>
-<p className="flex-between">
-  <span>Age:</span> 
-  <span>{latestBooking.age}</span>
-</p>
-<p className="flex-between">
-  <span>Sex:</span> 
-  <span>{latestBooking.sex}</span>
-</p>
-<p className="flex-between">
-  <span>Location:</span> 
-  <span>{latestBooking.location}</span>
-</p>
-<p className="flex-between">
-  <span>Contact:</span> 
-  <span>{latestBooking.contact}</span>
-</p>
-<p className="flex-between">
-  <span>Date:</span> 
-  <span>{new Date(latestBooking.date).toLocaleDateString()}</span>
-</p>
-<p className="flex-between">
-  <span>Time Slot:</span> 
-  <span>{latestBooking.timeSlot}</span>
-</p>
-<br />
-<hr />
-<p className="flex-between">
-  <span>Service:</span> 
-  <span>{latestBooking.service}</span>
-</p>
-<hr />
-<p className="flex-between">
-  <span>Amount:</span> 
-  <span>{price} Rs.</span>
-</p>
-
-
-      
+            {Object.entries({
+              Name: latestBooking.fullname,
+              Age: latestBooking.age,
+              Sex: latestBooking.sex,
+              Location: latestBooking.location,
+              Contact: latestBooking.contact,
+              Date: new Date(latestBooking.date).toLocaleDateString(),
+              "Time Slot": latestBooking.timeSlot,
+              Service: latestBooking.service,
+              Amount: `${price} Rs.`,
+            }).map(([key, value]) => (
+              <p className="flex-between" key={key}>
+                <span>{key}:</span> <span>{value}</span>
+              </p>
+            ))}
           </div>
         ) : (
           <p>No booking data available</p>
         )}
-        <button className="btn" onClick={handlePayment}>
+        <button className="btn" onClick={handlePayment} disabled={!price}>
           Proceed to Pay
         </button>
       </div>
@@ -181,34 +170,32 @@ const Wrapper = styled.section`
     transition: all 0.3s ease-in-out;
   }
 
-  .btn:hover {
+  .btn:disabled {
+    background-color: ${({ theme }) => theme.colors.disabled};
+    cursor: not-allowed;
+  }
+
+  .btn:hover:not(:disabled) {
     background-color: ${({ theme }) => theme.colors.helper};
   }
 
-
   .flex-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0.5rem 0; /* Adjust spacing as needed */
-  font-size: 1.6rem; /* Adjust font size as needed */
-  /* color: ${({ theme }) => theme.colors.text}; Optional: Use theme colors */
-}
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.5rem 0;
+    font-size: 1.6rem;
+  }
 
-.flex-between span:first-child {
-  font-weight: bold; /* Make the label bold */
-  color: ${({ theme }) => theme.colors.heading}; /* Optional: Use theme colors */
-}
+  .flex-between span:first-child {
+    font-weight: bold;
+    color: ${({ theme }) => theme.colors.heading};
+  }
 
-.flex-between span:last-child {
-  color: #4e4e4e;
-  /* color: ${({ theme }) => theme.colors.text}; Optional: Use theme colors */
-
-  text-align: right; /* Ensure the value aligns to the right */
-}
-
-
-
+  .flex-between span:last-child {
+    color: #4e4e4e;
+    text-align: right;
+  }
 `;
 
 export default Payment;

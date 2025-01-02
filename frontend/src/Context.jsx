@@ -18,6 +18,7 @@ const initialState={
     userEmail:"",
     userpassWord:"",
     bookData: JSON.parse(localStorage.getItem("bookData")) || [],
+    order :"",
     fullname:"",
     age:'',
     sex:"",
@@ -66,10 +67,75 @@ const AppProvider = ({ children }) => {
             }
         );
     };
+    const fetchOrder = async () => {
+        console.log("fetch order called");
+        const url = "http://localhost:5000/appointment/create-razorpay-order";
+        const token = localStorage.getItem("authtoken"); // Assuming authentication is required
+
+// console.log("Services array:"); // Debugging services array
+// console.log("Book data:", state.bookData); 
+
+
+
+
+
+
+        try {
+
+            const lastBooking = state.bookData[state.bookData.length - 1];
+if (!lastBooking) {
+    console.error("No booking data found");
+    return;
+}
+const selectedService = state.services.find(
+    (service) => service.name === lastBooking.service // Match by name or another unique identifier
+);
+
+if (!selectedService) {
+console.error("Selected service not found in services array");
+return;
+}
+
+const amount = selectedService.price; 
+if (amount <= 0) {
+    console.error("Invalid amount for Razorpay order:", amount);
+    return;
+
+}
+
+      
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    amount // Assuming price is in the last booking
+                }),
+            });
+    
+            if (!response.ok) {
+                throw new Error("Failed to fetch order details");
+            }
+    
+            const data = await response.json();
+            console.log("Order fetched:", data);
+    
+            dispatch({
+                type: "SET_ORDER",
+                payload: data, // Assuming `data` contains the order object
+            });
+        } catch (error) {
+            console.error("Error fetching order:", error);
+        }
+    };
+    
     const fetchCurrentUser = async () => {
         const url = "http://localhost:5000/auth/users/me";
         const token = localStorage.getItem("authtoken"); // Assuming JWT is stored in localStorage
-    
+       
         try {
             const response = await fetch(url, {
                 method: "GET",
@@ -77,10 +143,6 @@ const AppProvider = ({ children }) => {
                     Authorization: `Bearer ${token}`, // Pass the token for authentication
                 },
             });
-    
-            if (!response.ok) {
-                throw new Error("Failed to fetch current user info");
-            }
     
             const data = await response.json();
     
@@ -91,6 +153,9 @@ const AppProvider = ({ children }) => {
                 dispatch({ type: "LOGOUT" }); // Optional: Dispatch logout action
                 navigate('/login'); // Redirect to login page
                 return; // Exit the function after logging out
+            }
+            if (!response.ok) {
+                throw new Error("Failed to fetch current user info");
             }
     
             console.log("Data fetched:", data);
@@ -242,16 +307,32 @@ const AppProvider = ({ children }) => {
     
 
       useEffect(() => {
-        getServices(API);
         fetchCurrentUser();
+        getServices(API);
+        // fetchOrder();
         // checkTokenExpiration();
     }, []); // Watches for changes in state.services
     
+
+    useEffect(() => {
+        if (state.services.length > 0 && state.bookData.length > 0) {
+            console.log("Calling fetchOrder after data is ready");
+            fetchOrder();
+        }
+    }, [state.services, state.bookData]);
+    
     return (
 
-        <AppContext.Provider value={{...state ,dispatch,fetchCurrentUser,updateHomePage , updateAboutPage , setUserdata , setbookingData ,
+        <AppContext.Provider value={{...state ,
+            dispatch,
+            fetchCurrentUser,
+            updateHomePage ,
+             updateAboutPage ,
+              setUserdata ,
+         setbookingData ,
          setreportData,
          setSelectedButton,
+         fetchOrder,
          
 
          }}>
