@@ -196,5 +196,11 @@ const Wrapper = styled.section`
     }
    
   }
+  @media (max-width:${({theme})=>theme.media.mobile}) {
+    Button{
+      max-width: 50rem;
+
+    }
+  }
 `;
 export default Login;

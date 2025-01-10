@@ -317,10 +317,12 @@ const Wrapper = styled.section`
   .appointments-header,
   .appointments-row {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1.25fr 1fr 1.25fr 3fr;
+    grid-template-columns: 2.5fr 2.5fr 1.5fr 2.5fr 1.5fr 1fr 5fr;
     justify-content: center;
     align-items: center;
     text-align: center;
+    gap: 1.5rem;
+
     padding: 10px;
     background-color: #f9f9f9;
     border-radius: 8px;

@@ -337,28 +337,39 @@ res.status(500).json({error :'Server error'});
 
 // verify payment 
 
-const verifyPayment = async(req, res) =>{
-    const { razorpay_order_id , razorpay_payment_id , razorpay_signature  }= req.body;
-    const body = razorpay_order_id + "|" +razorpay_payment_id;
-    const expected_signature = crypto.createHmac('sha256', 'your_razorpay_secret')
-    .update(body.toString())
-    .digest('hex');
+const verifyPayment = async (req, res) => {
+    console.log("Request body in the verifyPayment function is", req.body);
 
-    if(expected_signature === razorpay_signature){
-        const appointment  = await Appointment.findOneAndUpdate(
-            {razorpayOrderId : razorpay_order_id},
-            { paymentStatus : 'confirmed', razorpayPaymentId: razorpay_payment_id},
-            {new : true}
-        );
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    const body = razorpay_order_id + "|" + razorpay_payment_id;
 
-        res.status(200).json({message : 'payment successfull ', appointment});
+    try {
+        const expected_signature = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+            .update(body.toString())
+            .digest('hex');
 
+        console.log("Body for signature:", body);
+        console.log("Expected Signature:", expected_signature);
+        console.log("Received Signature:", razorpay_signature);
+
+        if (expected_signature === razorpay_signature) {
+            const appointment = await Appointment.findOneAndUpdate(
+                { razorpayOrderId: razorpay_order_id },
+                { paymentStatus: 'confirmed', razorpayPaymentId: razorpay_payment_id },
+                { new: true }
+            );
+            console.log("Payment successful:", appointment);
+            console.log("response status , ", res.status)
+            res.status(200).json({ message: 'Payment verified successfully', appointment });
+        } else {
+            console.error("Payment verification failed: Signature mismatch");
+            res.status(400).json({ error: 'Payment verification failed' });
+        }
+    } catch (error) {
+        console.error("error is coming", error.message);
+        console.error("Error during payment verification:", error);
+        res.status(500).json({ error: 'Server error during payment verification' });
     }
-    else{
-        res.status(400).json({error :'payment verification failed'});
-    }
-
-
 };
 
 

@@ -58,10 +58,14 @@ function App() {
         <Routes>
         <Route path="/" element={<PrivateRoute element={<Home />} />} />
 
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/login" element={<Login />} />
+          {/* <Route path="/about" element={<About />} /> */}
+          <Route path="/about" element={<PrivateRoute element={<About />} />} />
+          <Route path="/services" element={<PrivateRoute element={<Services />} />} />
+          <Route path="/contact" element={<PrivateRoute element={<Contact />} />} />
+          {/* <Route path="/login" element={<PrivateRoute element={<Login />} />} /> */}
+
+          {/* <Route path="/services" element={<Services />} /> */}
+/          <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/appointment" element={<Appointment />} />
           <Route path="/payment" element={<Payment />} />

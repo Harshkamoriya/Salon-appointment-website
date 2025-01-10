@@ -14,7 +14,7 @@ function Footer() {
             <h3>talk to us today</h3>
           </div>
           <div>
-            <NavLink to="/">
+            <NavLink to="/" className="contact-short-btn">
               <Button>get started</Button>
             </NavLink>
           </div>
@@ -86,12 +86,13 @@ const Wrapper = styled.section`
   .contact-short {
     max-width: 60vw;
     margin: auto;
+    border-radius: 10px;
     padding: 5rem 10rem;
     background-color: ${({ theme }) => theme.colors.bg};
     box-shadow: ${({ theme }) => theme.colors.shadowSupport};
     transform: translateY(50%);
 
-    .grid div:last-child {
+     .contact-short-btn {
       justify-self: end;
       align-self: center;
     }
@@ -133,6 +134,27 @@ const Wrapper = styled.section`
     color: ${({theme})=>theme.colors.hr};
     height: 0.1px;
   }
+
+  @media (max-width : ${({theme})=>theme.media.mobile}){
+.contact-short{
+  max-width: 95vw;
+  padding: 2rem 0rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .contact-short-btn{
+    text-align:center;
+    justify-self: flex-start;
+    
+  }
+ 
+}
+footer .footer-bottom-section{
+  padding-top: 3.2rem;
+}
+  }
+
 `;
 
 export default Footer;

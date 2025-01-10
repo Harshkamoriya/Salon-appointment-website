@@ -26,7 +26,7 @@ function Herosection( ) {
           </div>
           
           <div className="section-hero-image">
-            <img src={image} alt="image" />
+            <img src={image} alt="image"  />
             
           </div>
         </div>
@@ -70,6 +70,12 @@ const Wrapper = styled.section`
       display: flex;
       justify-content: center;
       align-items: center;
+      background-color: tan;
+      img{
+        height: 450px;
+        width: 100%;
+
+      }
     }
 
     picture{
@@ -78,6 +84,12 @@ const Wrapper = styled.section`
 
     .hero-img{
       max-width: 80%;
+    }
+
+    @media (max-width: ${({theme})=>theme.media.mobile}) {
+      .grid{
+        gap: 7.2rem;
+      }
     }
 `;
 

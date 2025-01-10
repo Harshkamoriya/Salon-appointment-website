@@ -51,19 +51,22 @@ const Payment = () => {
       handler: async (response) => {
         // Verify payment on the backend
         try {
-          const res = await axios.post("/appointments/verify-payment", {
+          const res = await axios.post("http://localhost:5000/appointment/verify-payment", {
             razorpay_order_id: response.razorpay_order_id,
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,
           });
   
+          console.log("response is as folllows", res.data.message)
           if (res.data.message === "Payment verified successfully") {
             alert("Payment successful!");
             window.location.href = "/confirmation"; // Redirect to confirmation page
           } else {
+            console.log("payment failed in frontend")
             alert("Payment verification failed. Please contact support.");
           }
         } catch (error) {
+          console.error(error.message);
           console.error("Error during payment verification:", error);
           alert("Payment verification failed. Please try again.");
         }
