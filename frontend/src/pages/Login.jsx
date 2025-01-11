@@ -12,6 +12,7 @@ import { NavLink ,useNavigate} from "react-router-dom";
 function Login() {
   const [isChecked, setIsChecked] = useState(false);
   const { setUserdata } = useGlobalContext();
+  const {fetchCurrentUser} = useGlobalContext();
   const userEmail = useRef(null);
   const userPassword = useRef(null);
 
@@ -48,6 +49,7 @@ function Login() {
         console.log("login successfull");
         userEmail.current.value = "";
         userPassword.current.value = "";
+        fetchCurrentUser();
 
         setIsChecked(!isChecked);
 

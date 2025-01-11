@@ -8,7 +8,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import Payment from './pages/payment';
+import Payment from './pages/Payment';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from './GlobalStyle';
@@ -66,19 +66,19 @@ function App() {
 
           {/* <Route path="/services" element={<Services />} /> */}
 /          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/appointment" element={<Appointment />} />
+          <Route path="signup" element={<Signup />} />
+          <Route path="/appointment" element={<PrivateRoute element={<Appointment />} />} />
           <Route path="/payment" element={<Payment />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/appointments" element={<Appointments />} />
-          <Route path="/admin/services-update" element={<ServicesUpdate />} />
-          <Route path="/admin/reports" element={<Reports />} />
+          <Route path="/admin" element={<PrivateRoute element={<AdminDashboard/>} />} />
+          <Route path="/admin/appointments" element={<PrivateRoute element={<Appointments/>} />} />
+          <Route path="/admin/services-update" element={<PrivateRoute element={<ServicesUpdate/>} />} />
+          <Route path="/admin/reports" element={<PrivateRoute element={<Reports/>} />} />
           <Route path="/newdash" element={<Newdash />} />
-          <Route path="/admin/settings" element={<SettingPage />} />
+          <Route path="/admin/settings" element={<PrivateRoute element={<SettingPage/>} />} />
           <Route path="/adminbox" element={<AdminBox />} />
           <Route path="/menubox" element={<Menubox />} />
           <Route path="/confirmation" element={<Confirmation />} />
-          <Route path="/help" element={<Help />} />
+          <Route path="/help" element={<PrivateRoute element={<Help/>} />} />
 
           <Route path="*" element={<Error />} />
         </Routes>

@@ -310,12 +310,14 @@ const AppProvider = ({ children }) => {
   // },[])
 
   useEffect(() => {
-    fetchCurrentUser();
     getServices(API);
     // fetchOrder();
     // checkTokenExpiration();
   }, []); // Watches for changes in state.services
+useEffect(()=>{
+  fetchCurrentUser();
 
+},[])
   useEffect(() => {
     if (state.services.length > 0 && state.bookData.length > 0) {
       console.log("Calling fetchOrder after data is ready");
@@ -336,6 +338,8 @@ const AppProvider = ({ children }) => {
         setreportData,
         setSelectedButton,
         fetchOrder,
+        fetchCurrentUser
+        
       }}
     >
       {children}

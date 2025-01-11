@@ -51,7 +51,7 @@ const Payment = () => {
       handler: async (response) => {
         // Verify payment on the backend
         try {
-          const res = await axios.post("http://localhost:5000/appointment/verify-payment", {
+          const res = await axios.post("http://localhost:5000//appointment/verify-payment", {
             razorpay_order_id: response.razorpay_order_id,
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,

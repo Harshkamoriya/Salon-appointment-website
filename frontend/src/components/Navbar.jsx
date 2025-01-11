@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../Context';
@@ -158,13 +158,15 @@ const Nav = styled.nav`
 function Navbar() {
 
   const [openMenu ,setOpenMenu] = useState(false)
-
+  const [role , setRole] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const{ profileInfo }= useGlobalContext();
-  console.log(profileInfo);
-  const role = profileInfo ? profileInfo.role : null;
-  console.log(role)
+
+  useEffect(() => {
+    setRole(profileInfo ? profileInfo.role : null);
+  }, [profileInfo]);
+
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
@@ -190,6 +192,7 @@ function Navbar() {
       }
 
       localStorage.removeItem('authtoken');
+      closeDropdown();
       navigate('/login');
     } catch (error) {
       console.error('Logout failed:', error);
@@ -253,20 +256,20 @@ function Navbar() {
         <NavLink className="navbar-link" to="/help" onClick={closeDropdown}>
           Help
         </NavLink>
-        <NavLink className="navbar-link" to="/login" onClick={closeDropdown}>
+        <NavLink className="navbar-link" to="/login" onClick={()=>{handleLogout()}}>
                 Logout
               </NavLink>
       </>
     ) : (
       // Non-admin options
       <>
-        <NavLink className="navbar-link" to="/settings" onClick={closeDropdown}>
+        <NavLink className="navbar-link" to="/admin/settings" onClick={closeDropdown}>
           Settings
         </NavLink>
         <NavLink className="navbar-link" to="/help" onClick={closeDropdown}>
           Help
         </NavLink>
-        <NavLink className="navbar-link" to="/login" onClick={closeDropdown}>
+        <NavLink className="navbar-link" to="/login" onClick={handleLogout}>
                 Logout
               </NavLink>
        
