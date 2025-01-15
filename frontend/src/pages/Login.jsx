@@ -23,7 +23,7 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const API = "http://localhost:5000/auth/login";
+    const API = "https://salonease-oy0f.onrender.com/auth/login";
     const requestBody = {
       email: userEmail.current.value,
       password: userPassword.current.value,

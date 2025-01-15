@@ -24,7 +24,7 @@ const navigate  =useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const API = "http://localhost:5000/auth/Signup";
+    const API = "https://salonease-oy0f.onrender.com/auth/Signup";
     const requestBody = {
       name: username.current.value,
       email: userEmail.current.value,

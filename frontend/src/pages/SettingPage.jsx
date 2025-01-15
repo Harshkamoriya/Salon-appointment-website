@@ -75,7 +75,7 @@ const Settingpage = () => {
       console.log("formData is:", formData);
       const token = localStorage.getItem("authtoken");
       const response = await axios.put(
-        "http://localhost:5000/auth/user-update",
+        "https://salonease-oy0f.onrender.com/auth/user-update",
         formData,
         {
           headers: {
@@ -107,7 +107,7 @@ const Settingpage = () => {
       const token = localStorage.getItem("authtoken"); // Get the token from localStorage
       console.log("token in the try is", token);
       const response = await axios.put(
-        "http://localhost:5000/auth/change-password",
+        "https://salonease-oy0f.onrender.com/auth/change-password",
         { currentPassword, newPassword },
         {
           headers: {
@@ -303,13 +303,20 @@ const Wrapper = styled.section`
     font-family: Arial, sans-serif;
   }
 
-  .admin-box {
+  /* .admin-box {
     background: linear-gradient(135deg, #ff7eb3, #ff758c);
     color: white;
     padding: 20px;
     border-radius: 10px;
     width: 250px;
     margin-right: 20px;
+  } */
+
+  @media (max-width: 746px){
+    .settings-page{
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   .admin-box h2 {

@@ -33,7 +33,7 @@ const SettinngMenu = () => {
       <h2>{getGreeting()}, Admin</h2>
       <h3>Welcome <span>Harsh Kamoriya</span>,<br />
       Here's your dashboard overview.</h3>
-      <Info>
+     <div className="data"> <Info>
         <p>
           <strong>Date:</strong> {currentDate}
         </p>
@@ -46,7 +46,7 @@ const SettinngMenu = () => {
 
 
 
-</QuickActions>
+</QuickActions></div>
 
     </StyledAdminBox>
   );
@@ -65,6 +65,25 @@ const StyledAdminBox = styled.div`
   display: flex;
   flex-direction: column; /* Stack items vertically */
   align-items: center; /* Center items horizontally */
+
+  @media (max-width: 740px)
+     {
+       
+         display: flex;
+         flex-direction: row;
+         gap: 0.5rem;
+         text-align: left;
+
+         max-width: fit-content;
+         h2{
+          display: none;
+
+         }
+         h3{
+          font-size: 140%;
+         }
+    
+  }
 
   h2 {
     font-size: 1.5rem;
@@ -105,6 +124,7 @@ const QuickActions = styled.div`
   display: flex;
   flex-direction: column; /* Stack buttons vertically */
   align-items: center; /* Center buttons horizontally */
+  
 
   button {
     background: white;
@@ -115,10 +135,9 @@ const QuickActions = styled.div`
     border-radius: 8px;
     font-weight: bold;
     font-size:1.5rem;
-    overflow: hidden;
     cursor: pointer;
     transition: background 0.3s ease;
-    width: 80%; /* Make buttons consistent in width */
+    max-width:fit-content; /* Make buttons consistent in width */
 
     &:hover {
       background: #ffebf0;

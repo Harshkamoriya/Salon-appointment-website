@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const AppContext = React.createContext();
 
-const API = "http://localhost:5000/services";
+const API = "https://salonease-oy0f.onrender.com/services";
 
 const initialState = {
   name: " ",
@@ -80,7 +80,7 @@ const AppProvider = ({ children }) => {
 
   const fetchOrder = async () => {
     console.log("fetch order called");
-    const url = "http://localhost:5000/appointment/create-razorpay-order";
+    const url = "https://salonease-oy0f.onrender.com/appointment/create-razorpay-order";
     const token = localStorage.getItem("authtoken"); // Assuming authentication is required
 
     try {
@@ -132,7 +132,7 @@ const AppProvider = ({ children }) => {
   };
 
   const fetchCurrentUser = async () => {
-    const url = "http://localhost:5000/auth/users/me";
+    const url = "https://salonease-oy0f.onrender.com/auth/users/me";
     const token = localStorage.getItem("authtoken"); // Assuming JWT is stored in localStorage
     if (!token) {
       navigate("/login");

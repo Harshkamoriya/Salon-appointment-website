@@ -8,7 +8,7 @@ const LogoutButton = () => {
   const handleLogout = async () => {
     try {
       // Call the logout API to invalidate the token (if implemented)
-      await fetch('http://localhost:5000/auth/logout', {
+      await fetch('https://salonease-oy0f.onrender.com/auth/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -77,7 +77,7 @@ function App() {
           <Route path="/admin/settings" element={<PrivateRoute element={<SettingPage/>} />} />
           <Route path="/adminbox" element={<AdminBox />} />
           <Route path="/menubox" element={<Menubox />} />
-          <Route path="/confirmation" element={<Confirmation />} />
+          <Route path="/confirmation" element={<PrivateRoute element={<Confirmation/>} /> } />
           <Route path="/help" element={<PrivateRoute element={<Help/>} />} />
 
           <Route path="*" element={<Error />} />

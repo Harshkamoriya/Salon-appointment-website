@@ -28,10 +28,12 @@ const AdminBox = () => {
       <Avatar>
         <FaUserCircle size={80} />
       </Avatar>
+      <div className="greeting-container">
       <h2>{getGreeting()}, Admin</h2>
       <h3>Welcome <span>Harsh Kamoriya</span>,<br />
       Here's your dashboard overview.</h3>
-      <Info>
+      </div>
+     <div className="data"> <Info>
         <p>
           <strong>Date:</strong> {currentDate}
         </p>
@@ -42,7 +44,7 @@ const AdminBox = () => {
       <QuickActions>
         <button onClick={handleAppointments}>Manage Appointments</button>
         <button  onClick={handleAnalytics}>View Analytics</button>
-      </QuickActions>
+      </QuickActions></div>
     </StyledAdminBox>
   );
 };
@@ -60,10 +62,38 @@ const StyledAdminBox = styled.div`
   flex-direction: column; /* Stack items vertically */
   align-items: center; /* Center items horizontally */
 
+  
+  @media (max-width: 740px)
+     {
+       
+         display: flex;
+         flex-direction: row;
+         gap: 0.5rem;
+         max-width: fit-content;
+         h2{
+          display: none;
+
+         }
+         h3{
+          font-size: 140%;
+         }
+         .greeting-container{
+          text-align: left;
+         }
+    
+  }
+
   h2 {
     font-size: 1.5rem;
     font-weight: bold;
     margin: 0.5rem 0; /* Adjust margin for spacing */
+    
+  @media (max-width: 740px)
+     {
+       
+        font-size: 180%;
+    
+  }
   }
 
   p {
@@ -94,11 +124,22 @@ const Info = styled.div`
   }
 `;
 
+
 const QuickActions = styled.div`
   margin-top: 1.5rem;
   display: flex;
   flex-direction: column; /* Stack buttons vertically */
   align-items: center; /* Center buttons horizontally */
+  @media (max-width:740px){
+   display: flex;
+   flex-direction: row;
+   gap: 0.5rem;
+
+   
+  
+
+  }
+
 
   button {
     background: white;
@@ -109,16 +150,20 @@ const QuickActions = styled.div`
     border-radius: 8px;
     font-weight: bold;
     font-size:1.5rem;
-    overflow: hidden;
     cursor: pointer;
     transition: background 0.3s ease;
-    width: 80%; /* Make buttons consistent in width */
+    width: fit-content; /* Make buttons consistent in width */
 
     &:hover {
       background: #ffebf0;
     }
   }
-`;
+
+
+  
+`
+
+;
 
 
 export default AdminBox;

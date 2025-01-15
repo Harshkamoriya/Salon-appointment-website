@@ -33,13 +33,13 @@ function Reports() {
     const fetchData = async () => {
       try {
         const revenueRes = await axios.get(
-          "http://localhost:5000/dashboard/revenue-chart"
+          "https://salonease-oy0f.onrender.com/dashboard/revenue-chart"
         );
         const appointmentRes = await axios.get(
-          "http://localhost:5000/dashboard/appointments-chart"
+          "https://salonease-oy0f.onrender.com/dashboard/appointments-chart"
         );
         const customerRes = await axios.get(
-          "http://localhost:5000/dashboard/customers-chart"
+          "https://salonease-oy0f.onrender.com/dashboard/customers-chart"
         );
 
         setDailyRevenue(revenueRes.data.daily || []);
@@ -384,6 +384,15 @@ const Wrapper = styled.div`
     display: flex;
     gap: 1rem;
     padding: 1rem;
+  }
+  @media (max-width: 740px)
+     {
+       
+          .dashboard-container{
+            display: flex;
+           flex-direction: column;
+          }
+    
   }
 
   .dashboard-grid {

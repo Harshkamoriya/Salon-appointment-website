@@ -36,8 +36,8 @@ function ServicesUpdate() {
 
   const handleSubmit = async () => {
     const API = isAddMode
-      ? "http://localhost:5000/services"
-      : `http://localhost:5000/services/${selectedService._id}`;
+      ? "https://salonease-oy0f.onrender.com/services"
+      : `https://salonease-oy0f.onrender.com/services/${selectedService._id}`;
     const method = isAddMode ? "post" : "put";
 
     try {
@@ -48,7 +48,7 @@ function ServicesUpdate() {
 
         // Fetch updated services list
         const updatedServices = await axios.get(
-          "http://localhost:5000/services"
+          "https://salonease-oy0f.onrender.com/services"
         );
         dispatch({ type: "GET_SERVICES", payload: updatedServices.data });
       }
@@ -66,14 +66,14 @@ function ServicesUpdate() {
     if (window.confirm("Are you sure you want to delete this service?")) {
       try {
         console.log("i the try")
-        const response = await axios.delete(`http://localhost:5000/services/${id}`);
+        const response = await axios.delete(`https://salonease-oy0f.onrender.com/services/${id}`);
         if (response.status === 200) {
           console.log("service deleted")
           alert("Service deleted successfully!");
 
           // Fetch updated services list
           const updatedServices = await axios.get(
-            "http://localhost:5000/services"
+            "https://salonease-oy0f.onrender.com/services"
           );
           dispatch({ type: "GET_SERVICES", payload: updatedServices.data });
         }
@@ -182,6 +182,33 @@ const Wrapper = styled.section`
   /* Your existing styles */
   width: 100%;
 
+
+  .main {
+  display: flex;
+  padding: 20px;
+  width: 100%;
+  max-height: min-content;
+
+  /* .left {
+    background: linear-gradient(135deg, #ff7eb3, #ff758c);
+    color: white;
+    padding: 20px;
+    padding-bottom: 40px;
+    border-radius: 10px;
+    width: 25%;
+    margin-right: 20px;
+  } */
+  .right {
+    max-width: 100%;
+    max-height: 750px;
+    overflow: auto;
+    padding: 20px;
+    border-radius: 10px;
+    flex-grow: 1;
+    scrollbar-width: none;
+  }
+}
+
 .btn_box {
   display: flex;
   gap: 1rem;
@@ -238,31 +265,7 @@ const Wrapper = styled.section`
   }
 }
 
-.main {
-  display: flex;
-  padding: 20px;
-  width: 100%;
-  max-height: min-content;
 
-  .left {
-    background: linear-gradient(135deg, #ff7eb3, #ff758c);
-    color: white;
-    padding: 20px;
-    padding-bottom: 40px;
-    border-radius: 10px;
-    width: 25%;
-    margin-right: 20px;
-  }
-  .right {
-    max-width: 100%;
-    max-height: 750px;
-    overflow: auto;
-    padding: 20px;
-    border-radius: 10px;
-    flex-grow: 1;
-    scrollbar-width: none;
-  }
-}
 
 .card {
   border: 0.1rem solid rgb(170 170 170 / 40%);
@@ -324,6 +327,19 @@ figure {
     transition: all 0.2s linear;
   }
 }
+
+@media (max-width: 740px)
+     {
+       
+        .main{
+       display: flex;
+       flex-direction: column;
+        }
+        
+    
+  }
+
+
 `;
 
 export default ServicesUpdate;

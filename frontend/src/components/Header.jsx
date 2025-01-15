@@ -8,7 +8,7 @@ function Header() {
    <>
    <MainHeader>
    <NavLink to="/">
-    <h3 className='logo'>HARSH</h3>
+    <h3 className='logo'>SALON EASE</h3>
    </NavLink>
    <Navbar/>
    </MainHeader>

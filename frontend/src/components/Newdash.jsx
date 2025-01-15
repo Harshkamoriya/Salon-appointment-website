@@ -40,19 +40,19 @@ const Newdash = () => {
     const fetchData = async () => {
       try {
         const revenueRes = await axios.get(
-          "http://localhost:5000/dashboard/revenue"
+          "https://salonease-oy0f.onrender.com/dashboard/revenue"
         );
         const serviceRes = await axios.get(
-          "http://localhost:5000/dashboard/popular-service"
+          "https://salonease-oy0f.onrender.com/dashboard/popular-service"
         );
         const appointmentRes = await axios.get(
-          "http://localhost:5000/dashboard/appointments-chart"
+          "https://salonease-oy0f.onrender.com/dashboard/appointments-chart"
         );
         const customerRes = await axios.get(
-          "http://localhost:5000/dashboard/customers-chart"
+          "https://salonease-oy0f.onrender.com/dashboard/customers-chart"
         );
         const chartRes = await axios.get(
-          "http://localhost:5000/dashboard/revenue-chart"
+          "https://salonease-oy0f.onrender.com/dashboard/revenue-chart"
         );
 
         
@@ -309,7 +309,12 @@ width: 100vw;
 @media (max-width: 768px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
+    
   }
+  .dashboard-container{
+      display: flex;
+      flex-direction: column;
+    }
 
   .weekly-revenue {
     grid-column: span 1;

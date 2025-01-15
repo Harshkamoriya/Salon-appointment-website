@@ -68,6 +68,22 @@ const StyledAdminBox = styled.div`
   flex-direction: column; /* Stack items vertically */
   align-items: center; /* Center items horizontally */
 
+  @media (max-width: 740px)
+     {
+       
+         display: flex;
+         flex-direction: row;
+         max-width: fit-content;
+         h2{
+          display: none;
+
+         }
+         h3{
+          font-size: 140%;
+         }
+    
+  }
+
   h2 {
     font-size: 1.5rem;
     font-weight: bold;
@@ -117,10 +133,9 @@ const QuickActions = styled.div`
     border-radius: 8px;
     font-weight: bold;
     font-size:1.5rem;
-    overflow: hidden;
     cursor: pointer;
     transition: background 0.3s ease;
-    width: 80%; /* Make buttons consistent in width */
+    max-width:fit-content; /* Make buttons consistent in width */
 
     &:hover {
       background: #ffebf0;

@@ -2,56 +2,47 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { GlobalStyle } from "../GlobalStyle";
 import SearchBox from "./SearchBox";
+
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredAppointments, setFilteredAppointments] = useState([]);
 
-    // Fetch data from API
-    useEffect(() => {
-      const fetchAppointments = async () => {
-        try {
-          const response = await fetch(
-            "http://localhost:5000/appointment/details"
-          );
-          const data = await response.json();
-        console.log(" i the fetch function")
-       
-  
-          setAppointments(data);
-          setFilteredAppointments(data);
-        
-        } catch (error) {
-          console.error("Error fetching appointments:", error);
-        }
-      };
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await fetch(
+          "https://salonease-oy0f.onrender.com/appointment/details"
+        );
+        const data = await response.json();
+        setAppointments(data);
+        setFilteredAppointments(data);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    };
 
-      fetchAppointments();
-    }, []);
+    fetchAppointments();
+  }, []);
 
-    useEffect(() => {
-      const lowerCaseSearchTerm = searchTerm.toLowerCase();
-      const filtered = appointments.filter(
-        (appointment) =>
-          appointment.name.toLowerCase().includes(lowerCaseSearchTerm) ||
-          appointment.service.toLowerCase().includes(lowerCaseSearchTerm) ||
-          appointment.status.toLowerCase().includes(lowerCaseSearchTerm) ||
-          appointment.date.includes(lowerCaseSearchTerm)||
-          appointment.contact.includes(lowerCaseSearchTerm)
-      );
-      setFilteredAppointments(filtered);
-    }, [searchTerm, appointments]);
-
-  
-
-   
+  useEffect(() => {
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    const filtered = appointments.filter(
+      (appointment) =>
+        appointment.name.toLowerCase().includes(lowerCaseSearchTerm) ||
+        appointment.service.toLowerCase().includes(lowerCaseSearchTerm) ||
+        appointment.status.toLowerCase().includes(lowerCaseSearchTerm) ||
+        appointment.date.includes(lowerCaseSearchTerm) ||
+        appointment.contact.includes(lowerCaseSearchTerm)
+    );
+    setFilteredAppointments(filtered);
+  }, [searchTerm, appointments]);
 
   const handleAction = async (id, action) => {
-    console.log("id passed into the function is" + id);
     if (action === "Cancel") {
       try {
         const response = await fetch(
-          "http://localhost:5000/appointment/delete",
+          "https://salonease-oy0f.onrender.com/appointment/delete",
           {
             method: "DELETE",
             headers: {
@@ -76,10 +67,9 @@ const Appointments = () => {
         alert("An error occurred while deleting the appointment");
       }
     } else if (action === "Complete") {
-      console.log("id in complete function is :" + id);
       try {
         const response = await fetch(
-          "http://localhost:5000/appointment/update-status",
+          "https://salonease-oy0f.onrender.com/appointment/update-status",
           {
             method: "PUT",
             headers: {
@@ -112,10 +102,9 @@ const Appointments = () => {
       const timeSlot = prompt("Enter the new time slot (e.g., 10:00 AM):");
 
       if (date && timeSlot) {
-        console.log(id);
         try {
           const response = await fetch(
-            "http://localhost:5000/appointment/reschedule",
+            "https://salonease-oy0f.onrender.com/appointment/reschedule",
             {
               method: "PUT",
               headers: {
@@ -124,7 +113,6 @@ const Appointments = () => {
               body: JSON.stringify({ id, date, timeSlot }),
             }
           );
-          // console.log(response.json());
           const result = await response.json();
 
           if (response.ok) {
@@ -153,357 +141,308 @@ const Appointments = () => {
     <Wrapper>
       <div className="appointments-container">
         <h2 className="appointments-title">Salon Appointments</h2>
+        <div className="search-section">
+          <SearchBox searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        </div>
+        
         <div className="appointments-table">
-          <div className="searchbar">
-            <div className="up">
-              {" "}
-              <SearchBox searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-            </div>
-          </div>
-            
-
           <div className="appointments-header">
-            <h3>
-              {" "}
-              <span>Customer</span>
-            </h3>
-            <h3>
-              {" "}
-              <span>Time</span>
-            </h3>
-            <h3>
-              {" "}
-              <span>date</span>
-            </h3>
-            <h3>
-              <span>Service</span>
-            </h3>
-            <h3>
-              <span>Status</span>
-            </h3>
-            <h3>
-              {" "}
-              <span>Phone</span>
-            </h3>
-            <h3>
-              {" "}
-              <span>Actions</span>
-            </h3>
+            <div className="header-cell">Customer</div>
+            <div className="header-cell">Time</div>
+            <div className="header-cell">Date</div>
+            <div className="header-cell">Service</div>
+            <div className="header-cell">Status</div>
+            <div className="header-cell">Phone</div>
+            <div className="header-cell">Actions</div>
           </div>
-          {filteredAppointments.map((appointment) => (
-            <div key={appointment.id} className="appointments-row">
-              <span>
-                <p>{appointment.name}</p>
-              </span>
-              <span>
-                <p>{appointment.timeSlot}</p>
-              </span>
-              <span>
-                <p>{appointment.date}</p>
-              </span>
-              <span>
-                <p>{appointment.service}</p>
-              </span>
-              <span
-                className={`status-badge ${
-                  appointment.status === "completed"
-                    ? "completed"
-                    : appointment.status === "confirmed"
-                    ? "confirmed"
-                    : "pending"
-                }`}
-              >
-                {appointment.status}
-              </span>
-
-              <p>
-                <span className="contact">{appointment.contact}</span>
-              </p>
-              <span className="actions">
-                <button
-                  className="action-button cancel"
-                  onClick={() => handleAction(appointment._id, "Cancel")}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="action-button complete"
-                  onClick={() => handleAction(appointment._id, "Complete")}
-                >
-                  Mark as Completed
-                </button>
-                <button
-                  className="action-button reschedule"
-                  onClick={() => handleAction(appointment._id, "Reschedule")}
-                >
-                  Reschedule
-                </button>
-              </span>
-            </div>
-          ))}
+          
+          <div className="appointments-body">
+            {filteredAppointments.map((appointment) => (
+              <div key={appointment.id} className="appointment-card">
+                <div className="card-header">
+                  <h3 className="customer-name">{appointment.name}</h3>
+                  <span className={`status-badge ${appointment.status}`}>
+                    {appointment.status}
+                  </span>
+                </div>
+                
+                <div className="card-body">
+                  <div className="info-group">
+                    <div className="info-label">Time:</div>
+                    <div className="info-value">{appointment.timeSlot}</div>
+                  </div>
+                  <div className="info-group">
+                    <div className="info-label">Date:</div>
+                    <div className="info-value">{appointment.date}</div>
+                  </div>
+                  <div className="info-group">
+                    <div className="info-label">Service:</div>
+                    <div className="info-value">{appointment.service}</div>
+                  </div>
+                  <div className="info-group">
+                    <div className="info-label">Phone:</div>
+                    <div className="info-value">{appointment.contact}</div>
+                  </div>
+                </div>
+                
+                <div className="card-actions">
+                  <button
+                    className="action-button cancel"
+                    onClick={() => handleAction(appointment._id, "Cancel")}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="action-button complete"
+                    onClick={() => handleAction(appointment._id, "Complete")}
+                  >
+                    Complete
+                  </button>
+                  <button
+                    className="action-button reschedule"
+                    onClick={() => handleAction(appointment._id, "Reschedule")}
+                  >
+                    Reschedule
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        </div>
-      
-      </Wrapper>
+      </div>
+    </Wrapper>
   );
 };
 
-
 const Wrapper = styled.section`
-
-
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7ff 0%, #f1f1fe 100%);
+  min-height: 100vh;
 
   .appointments-container {
-    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
   }
-
-  .searchbar{
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    gap: 1rem;
-    
-    .up{
-      display: flex;
-      justify-content: space-between;
-      padding: 5px 15px;
-      background-color: #fbf9f9;
-      border-radius: 8px;
-
-    }
-    .down{
-      /* background-color: #003c04;
-      padding: 5px 15px;
-    
-      border-radius: 8px; */
-      
-    background-color: #f8f9fa;
-    padding: 10px;
-    border-radius: 8px;
-    margin-top: 10px;
-  }
-
-  .filtered-appointment {
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-
-    }
-  
 
   .appointments-title {
+    font-size: 2.8rem;
+    color: #2d3436;
     text-align: center;
-    color: #1d1919;
-    margin-bottom: 20px;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
-  .searchbar {
-    background-color: #007bff;
 
+  .search-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
   }
 
   .appointments-table {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .appointments-header,
-  .appointments-row {
-    display: grid;
-    grid-template-columns: 2.5fr 2.5fr 1.5fr 2.5fr 1.5fr 1fr 5fr;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    gap: 1.5rem;
-
-    padding: 10px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
   }
 
   .appointments-header {
-    font-weight: bold;
-    background-color: #007bff;
-    color: white;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    padding: 1.5rem;
+    gap: 1rem;
   }
 
-  .appointments-row:nth-child(even) {
-    background-color: #f1f1f1;
-  }
-
-  .status-badge {
-    padding: 5px 10px;
-    border-radius: 12px;
+  .header-cell {
     color: white;
+    font-weight: 600;
+    font-size: 1.4rem;
     text-align: center;
   }
 
+  .appointments-body {
+    padding: 1.5rem;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .appointment-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .customer-name {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #2d3436;
+  }
+
+  .status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
   .status-badge.completed {
-    background-color: #28a745; /* Green for completed */
+    background-color: #dcfce7;
+    color: #166534;
   }
 
   .status-badge.pending {
-    background-color: #ffc107; /* Yellow for pending */
+    background-color: #fef9c3;
+    color: #854d0e;
   }
 
   .status-badge.confirmed {
-    background-color: #007bff; /* Blue for confirmed */
+    background-color: #dbeafe;
+    color: #1e40af;
   }
 
-  .actions {
+  .card-body {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .info-group {
     display: flex;
-    justify-content: center;
-    gap: 10px;
+    gap: 1rem;
+  }
+
+  .info-label {
+    font-weight: 600;
+    color: #4b5563;
+    min-width: 80px;
+  }
+
+  .info-value {
+    color: #1f2937;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 
   .action-button {
-    padding: 5px 10px;
+    padding: 0.8rem 1.5rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
+    font-size: 1.3rem;
+    font-weight: 500;
     cursor: pointer;
-    font-size: 1.2rem;
+    transition: all 0.2s ease;
   }
 
   .action-button.cancel {
-    background-color: #dc3545;
-    color: white;
+    background-color: #fee2e2;
+    color: #991b1b;
+
+    &:hover {
+      background-color: #fecaca;
+    }
   }
 
   .action-button.complete {
-    background-color: #28a745;
-    color: white;
+    background-color: #dcfce7;
+    color: #166534;
+
+    &:hover {
+      background-color: #bbf7d0;
+    }
   }
 
   .action-button.reschedule {
-    background-color: #17a2b8;
-    color: white;
+    background-color: #dbeafe;
+    color: #1e40af;
+
+    &:hover {
+      background-color: #bfdbfe;
+    }
   }
 
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .appointments-header,
-    .appointments-row {
-      grid-template-columns: 1fr 1fr 1fr;
-      font-size: 0.9rem;
+  @media (max-width: 1024px) {
+    padding: 1.5rem;
+
+    .appointments-header {
+      display: none;
     }
 
-    .actions {
-      flex-wrap: wrap;
-      gap: 5px;
+    .appointment-card {
+      padding: 1.2rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+
+    .appointments-title {
+      font-size: 2.4rem;
+    }
+
+    .card-actions {
+      justify-content: center;
     }
 
     .action-button {
-      padding: 5px;
-      font-size: 1.11rem;
+      flex: 1;
+      text-align: center;
+      padding: 0.7rem 1rem;
+      font-size: 1.2rem;
     }
   }
 
   @media (max-width: 480px) {
-    .appointments-header,
-    .appointments-row {
-      grid-template-columns: 1fr;
-      text-align: left;
+    padding: 0.5rem;
+
+    .appointments-title {
+      font-size: 2rem;
     }
 
-    .appointments-row span,
-    .appointments-header span {
-      margin-bottom: 5px;
-    }
-
-    .actions {
-      justify-content: flex-start;
-    }
-  }
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: ${({ theme }) => theme.colors.white};
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
-  
-
-  .filter-button {
-    background-color: ${({ theme }) => theme.colors.btn};
-    color: ${({ theme }) => theme.colors.white};
-    border: none;
-    border-radius: 5px;
-    padding: 0.8rem 1.6rem;
-    font-size: 1.6rem;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-
-    &:hover {
-      background-color: ${({ theme }) => theme.colors.helper};
-    }
-  }
-
-  .filter-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: ${({ theme }) => theme.colors.white};
-    border: 1px solid ${({ theme }) => theme.colors.border};
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-top: 1rem;
-    box-shadow: ${({ theme }) => theme.colors.shadowSupport};
-    z-index: 100;
-
-    select,
-    button {
-      width: 100%;
+    .appointment-card {
       padding: 1rem;
-      margin-bottom: 1rem;
-      border: 1px solid ${({ theme }) => theme.colors.border};
-      border-radius: 5px;
+    }
+
+    .customer-name {
       font-size: 1.4rem;
     }
 
-    .apply-button {
-      background-color: ${({ theme }) => theme.colors.btn};
-      color: ${({ theme }) => theme.colors.white};
-      border: none;
-      padding: 1rem;
-      border-radius: 5px;
-      font-size: 1.6rem;
-      cursor: pointer;
-      transition: all 0.3s ease-in-out;
+    .info-group {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
 
-      &:hover {
-        background-color: ${({ theme }) => theme.colors.helper};
-      }
+    .card-actions {
+      flex-direction: column;
+    }
+
+    .action-button {
+      width: 100%;
     }
   }
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
-
-    .filter-dropdown {
-      width: 100%;
-      right: auto;
-    }
-
-    .filter-button {
-      width: 100%;
-      margin-top: 1rem;
-    }
-  }
-
-
-`
-
-;
+`;
 
 export default Appointments;
